@@ -1,22 +1,3 @@
-/*aa
-Niniejszy program jest wolnym oprogramowaniem; możesz go
-rozprowadzać dalej i / lub modyfikować na warunkach Powszechnej
-Licencji Publicznej GNU, wydanej przez Fundację Wolnego
-Oprogramowania - według wersji 2 tej Licencji lub(według twojego
-wyboru) którejś z późniejszych wersji.
-
-Niniejszy program rozpowszechniany jest z nadzieją, iż będzie on
-użyteczny - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domyślnej
-gwarancji PRZYDATNOŚCI HANDLOWEJ albo PRZYDATNOŚCI DO OKREŚLONYCH
-ZASTOSOWAŃ.W celu uzyskania bliższych informacji sięgnij do
-Powszechnej Licencji Publicznej GNU.
-
-Z pewnością wraz z niniejszym programem otrzymałeś też egzemplarz
-Powszechnej Licencji Publicznej GNU(GNU General Public License);
-jeśli nie - napisz do Free Software Foundation, Inc., 59 Temple
-Place, Fifth Floor, Boston, MA  02110 - 1301  USA
-*/
-
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_SWIZZLE
 
@@ -32,12 +13,17 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "shaderprogram.h"
 #include "myCube.h"
 #include "myTeapot.h"
+#include "Camera.h"
+#include "Mouse.h"
 
 float speed_x=0;
 float speed_y=0;
 float aspectRatio=1;
+float deltaTime = 0.0f;
 
 ShaderProgram *sp;
+Camera camera = Camera();
+Mouse mouse = Mouse();
 
 
 //Odkomentuj, żeby rysować kostkę
@@ -64,18 +50,23 @@ void error_callback(int error, const char* description) {
 
 
 void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
-    if (action==GLFW_PRESS) {
-        if (key==GLFW_KEY_LEFT) speed_x=-PI/2;
-        if (key==GLFW_KEY_RIGHT) speed_x=PI/2;
-        if (key==GLFW_KEY_UP) speed_y=PI/2;
-        if (key==GLFW_KEY_DOWN) speed_y=-PI/2;
-    }
-    if (action==GLFW_RELEASE) {
-        if (key==GLFW_KEY_LEFT) speed_x=0;
-        if (key==GLFW_KEY_RIGHT) speed_x=0;
-        if (key==GLFW_KEY_UP) speed_y=0;
-        if (key==GLFW_KEY_DOWN) speed_y=0;
-    }
+	if (action == GLFW_PRESS) {
+		if (key == GLFW_KEY_A) camera.keyboardInput(LEFT, deltaTime);
+		if (key == GLFW_KEY_D) camera.keyboardInput(RIGHT, deltaTime);
+		if (key == GLFW_KEY_W) camera.keyboardInput(FORWARD, deltaTime);
+		if (key == GLFW_KEY_S) camera.keyboardInput(BACKWARD, deltaTime);
+		
+	}
+	if (action == GLFW_RELEASE) {
+		if (key == GLFW_KEY_A) camera.setMovingLeft();
+		if (key == GLFW_KEY_D) camera.setMovingRight();
+		if (key == GLFW_KEY_W) camera.setMovingForward();
+		if (key == GLFW_KEY_S) camera.setMovingBackward();
+	}
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	camera.mouseInput(mouse.getXdiff(xpos), mouse.getYdiff(ypos));
 }
 
 void windowResizeCallback(GLFWwindow* window,int width,int height) {
@@ -91,6 +82,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glEnable(GL_DEPTH_TEST);
 	glfwSetWindowSizeCallback(window,windowResizeCallback);
 	glfwSetKeyCallback(window,keyCallback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	sp=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
 }
@@ -110,7 +102,6 @@ void freeOpenGLProgram(GLFWwindow* window) {
 void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//																				 fioapfopjTETSTDASGYRFSYSUTESTY TESTY TESTY
 
 	glm::mat4 V=glm::lookAt(
          glm::vec3(0, 0, -2.5),
@@ -126,7 +117,7 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
     sp->use();//Aktywacja programu cieniującego
     //Przeslij parametry programu cieniującego do karty graficznej
     glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
-    glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(V));
+    glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(camera.getViewMatrix(deltaTime)));
     glUniformMatrix4fv(sp->u("M"),1,false,glm::value_ptr(M));
 
     glEnableVertexAttribArray(sp->a("vertex"));  //Włącz przesyłanie danych do atrybutu vertex
@@ -185,8 +176,7 @@ int main(void)
 	glfwSetTime(0); //Zeruj timer
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
-        angle_x+=speed_x*glfwGetTime(); //Zwiększ/zmniejsz kąt obrotu na podstawie prędkości i czasu jaki upłynał od poprzedniej klatki
-        angle_y+=speed_y*glfwGetTime(); //Zwiększ/zmniejsz kąt obrotu na podstawie prędkości i czasu jaki upłynał od poprzedniej klatki
+		deltaTime = glfwGetTime();
         glfwSetTime(0); //Zeruj timer
 		drawScene(window,angle_x,angle_y); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.

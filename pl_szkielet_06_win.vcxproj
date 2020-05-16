@@ -24,11 +24,13 @@
     <ClInclude Include="myCube.h" />
     <ClInclude Include="myTeapot.h" />
     <ClInclude Include="shaderprogram.h" />
+    <ClInclude Include="testS.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
+    <ClCompile Include="testS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="f_simplest.glsl" />
