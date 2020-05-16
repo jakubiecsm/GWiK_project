@@ -110,6 +110,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//																				 fioapfopjTETSTDASGYRFSYSUTESTY TESTY TESTY
 
 	glm::mat4 V=glm::lookAt(
          glm::vec3(0, 0, -2.5),
