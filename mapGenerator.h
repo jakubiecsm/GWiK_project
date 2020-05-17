@@ -1,5 +1,6 @@
 #pragma once
 #include "math.h"
+#include <iostream>
 
 
 class mapGenerator {
@@ -7,7 +8,7 @@ class mapGenerator {
 private:
 	const int flatness; //the bigger the more hilly
 	const int size; //base of the map will be a square
-	const int vericesCount;
+	const int verticesCount;
 
 	float** mapHeights;
 	float* mapVertices;
@@ -27,7 +28,7 @@ public:
 	float* getVertices() { return mapVertices; }
 	float* getNormals() { return mapNormals; }
 	float* getColors() { return mapColors; }
-	int getVertexCount() { return vericesCount; }
+	int getVertexCount() { return verticesCount; }
 
 
 };

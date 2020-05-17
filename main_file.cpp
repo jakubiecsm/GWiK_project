@@ -26,7 +26,7 @@ ShaderProgram *sp;
 Camera camera = Camera();
 Mouse mouse = Mouse();
 
-mapGenerator map = mapGenerator(1, 4);
+mapGenerator map = mapGenerator(1, 50);
 
 
 float* vertices = map.getVertices();
