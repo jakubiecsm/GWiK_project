@@ -26,7 +26,7 @@ mapGenerator::mapGenerator(int flatness, int size)
 
 void mapGenerator::calculateMapHeights() {
 
-	//left bottom corner is set to be [0][0] in array
+	//left bottom corner is set to [0][0] in array
 	//x - rows, z - cols, y - heights
 	//Function to calculate heights y = |z| + |x|
 
