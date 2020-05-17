@@ -131,7 +131,7 @@ float myCubeColors[]={
 				1.0f,1.0f,1.0f,1.0f,
 			};
 
-			float myCubeNormals[]={
+float myCubeNormals[]={
 				//Ściana 1
 				0.0f, 0.0f,-1.0f,0.0f,
 				0.0f, 0.0f,-1.0f,0.0f,
@@ -189,7 +189,7 @@ float myCubeColors[]={
 
 			};
 
-			float myCubeVertexNormals[]={
+float myCubeVertexNormals[]={
 				//Ściana 1
 				1.0f,-1.0f,-1.0f,0.0f,
 				-1.0f, 1.0f,-1.0f,0.0f,
@@ -246,7 +246,7 @@ float myCubeColors[]={
 				1.0f, 1.0f,-1.0f,0.0f,
 			};
 
-			float myCubeTexCoords[]={
+float myCubeTexCoords[]={
 				//Ściana 1
 				1.0f,1.0f, 0.0f,0.0f, 0.0f,1.0f,
 				1.0f,1.0f, 1.0f,0.0f, 0.0f,0.0f,

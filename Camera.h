@@ -19,8 +19,8 @@ enum CameraMovement {
 };
 
 //Constant values
-const float SPEED       =   1.0f;
-const float MAXPITCH    =   25.0f;
+const float SPEED       =   5.0f;
+const float MAXPITCH    =   50.0f;
 const float PITCH       =   0.0f;
 const float YAW         =   0.0f;
 
