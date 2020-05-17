@@ -15,6 +15,7 @@
 #include "myTeapot.h"
 #include "Camera.h"
 #include "Mouse.h"
+#include "mapGenerator.h"
 
 float speed_x=0;
 float speed_y=0;
@@ -25,6 +26,13 @@ ShaderProgram *sp;
 Camera camera = Camera();
 Mouse mouse = Mouse();
 
+mapGenerator map = mapGenerator(1, 4);
+
+
+float* vertices = map.getVertices();
+float* normals = map.getNormals();
+float* colors = map.getColors();
+int vertexCount = map.getVertexCount();
 
 //Odkomentuj, żeby rysować kostkę
 //float* vertices = myCubeVertices;
@@ -35,11 +43,11 @@ Mouse mouse = Mouse();
 
 
 //Odkomentuj, żeby rysować czajnik
-float* vertices = myTeapotVertices;
-float* normals = myTeapotVertexNormals;
-float* texCoords = myTeapotTexCoords;
-float* colors = myTeapotColors;
-int vertexCount = myTeapotVertexCount;
+//float* vertices = myTeapotVertices;
+//float* normals = myTeapotVertexNormals;
+//float* texCoords = myTeapotTexCoords;
+//float* colors = myTeapotColors;
+//int vertexCount = myTeapotVertexCount;
 
 
 

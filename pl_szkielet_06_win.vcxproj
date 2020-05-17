@@ -19,18 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="mapGenerator.h" />
+    <ClInclude Include="Mouse.h" />
     <ClInclude Include="myCube.h" />
     <ClInclude Include="myTeapot.h" />
     <ClInclude Include="shaderprogram.h" />
-    <ClInclude Include="testS.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
+    <ClCompile Include="mapGenerator.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
-    <ClCompile Include="testS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="f_simplest.glsl" />
