@@ -14,6 +14,9 @@ mapGenerator::mapGenerator(float flatness, int size)
 	//Creating array for storing walls normals
 	mapNormals = new float[4 * verticesCount]; //same as above
 
+	//Creating array for storing vertex normals
+	mapVerticesNormals = new float[4 * verticesCount];
+
 	//Creating array for storing colors
 	mapColors = new float[4 * verticesCount]; //same as above
 
@@ -23,9 +26,11 @@ mapGenerator::mapGenerator(float flatness, int size)
 	//Counting heights in different points of map
 	calculateMapHeights();
 	calculateMapVertices();
-	calculateNormals();
-	calculateColors();
-	calculateTexCoords();
+	calculateMapVerticesNormals();
+	calculateMapNormals();
+
+	calculateMapColors();
+	calculateMapTexCoords();
 
 }
 
@@ -33,9 +38,6 @@ void mapGenerator::calculateMapHeights() {
 
 	//left bottom corner is set to1 [0][0] in array
 	//x - rows, z - cols, y - heights
-
-	int offsetX = size / 2;
-	int offsetZ = size / 2;
 
 	for (int z = 0; z <= size; ++z)
 		for (int x = 0; x <= size; ++x)
@@ -87,9 +89,13 @@ void mapGenerator::calculateMapVertices() {
 			mapVertices[index++] = 1.0f;
 		}
 	}
+	for (int i = 0; i < 4 * verticesCount; i++) {
+		if (i % 4 == 0) std::cout << "\n";
+		std::cout << mapVertices[i] << "|";
+	}
 }
 
-void mapGenerator::calculateNormals() {
+void mapGenerator::calculateMapNormals() {
 	using namespace std;
 	using namespace glm;
 
@@ -111,9 +117,6 @@ void mapGenerator::calculateNormals() {
 			v3 = normalize(cross(v2, v1));
 			odd = false;
 		}
-			
-			
-		
 		
 		for (int j = i; j < i + 12; j++) {
 			mapNormals[j++] = v3.x;
@@ -123,17 +126,25 @@ void mapGenerator::calculateNormals() {
 		}
 		i += 11;
 	}
+}
 
-	for (int i = 0; i < 4 * verticesCount; i++) {
-		if (i % 4 == 0) cout << endl;
-		cout << mapNormals[i] << "|";
+void mapGenerator::calculateMapVerticesNormals() {
+
+	for (int i = 0; i < 4 * verticesCount ; ++i) {
 		
-	}
+		//Looking for all adjacent vertices on different walls
+		if (i - 8 > 0) {
 
+		}
+		if (i + 8 < 4 * verticesCount) {
+
+		}
+
+	}
 
 }
 
-void mapGenerator::calculateColors() {
+void mapGenerator::calculateMapColors() {
 	using namespace std;
 	for (int i = 0; i < 4 * verticesCount; i++) {
 		mapColors[i++] = 0.0f;
@@ -143,7 +154,7 @@ void mapGenerator::calculateColors() {
 	}
 }
 
-void mapGenerator::calculateTexCoords() {
+void mapGenerator::calculateMapTexCoords() {
 	for (int i = 0; i < 2 * verticesCount; i++) {
 		texCoords[i++] = 0.0f;
 		texCoords[i++] = 0.0f;

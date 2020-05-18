@@ -15,25 +15,28 @@ private:
 	float* mapVertices;
 	float* mapColors;
 	float* mapNormals;
+	float* mapVerticesNormals;
 	float* texCoords;
 
 	void calculateMapHeights();
 	void calculateMapVertices();
-	void calculateNormals();
-	void calculateColors();
-	void calculateTexCoords();
+	void calculateMapNormals();
+	void calculateMapVerticesNormals();
+	void calculateMapColors();
+	void calculateMapTexCoords();
 
 
 
 public:
 	mapGenerator(float flatness, int size);
 
-	float* getVertices() { return mapVertices; }
-	float* getNormals() { return mapNormals; }
-	float* getColors() { return mapColors; }
-	float* getTexCoords() { return texCoords; }
+	float* getMapVertices() { return mapVertices; }
+	float* getMapNormals() { return mapNormals; }
+	float* getMapVerticesNormals() { return mapVerticesNormals; }
+	float* getMapColors() { return mapColors; }
+	float* getMapTexCoords() { return texCoords; }
 	float** getMapHeights() { return mapHeights; }
-	int getVertexCount() { return verticesCount; }
+	int getMapVertexCount() { return verticesCount; }
 
 
 };
