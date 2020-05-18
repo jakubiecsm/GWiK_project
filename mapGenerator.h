@@ -2,6 +2,14 @@
 #include "math.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <stdlib.h>
+#include <stdio.h>
+#include "shaderprogram.h"
 
 
 class mapGenerator {
@@ -27,6 +35,8 @@ private:
 
 public:
 	mapGenerator(float flatness, int size);
+
+	void drawMap(ShaderProgram* sp, GLuint tex0);
 
 	float* getVertices() { return mapVertices; }
 	float* getNormals() { return mapNormals; }

@@ -16,6 +16,8 @@
 #include "Camera.h"
 #include "Mouse.h"
 #include "mapGenerator.h"
+#include "Model.h"
+#include "Sphere.h"
 
 float speed_x=0;
 float speed_y=0;
@@ -25,6 +27,7 @@ float deltaTime = 0.0f;
 ShaderProgram *sp;
 Camera camera = Camera();
 Mouse mouse = Mouse();
+Models::Sphere sphere = Models::Sphere();
 
 mapGenerator map = mapGenerator(0.1, 20);
 
@@ -108,6 +111,15 @@ GLuint readTexture(const char* filename) {
 	return tex;
 }
 
+void drawMap() {
+	map.drawMap(sp, tex0);
+}
+
+void drawSphere() { 
+
+	sphere.draw(sp, tex0);
+}
+
 //Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
 	//************Tutaj umieszczaj kod, który należy wykonać raz, na początku programu************
@@ -143,38 +155,19 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 
     glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
 
-    glm::mat4 M=glm::mat4(1.0f);
-	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
-	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f)); //Wylicz macierz modelu
+    
+
 
     sp->use();//Aktywacja programu cieniującego
     //Przeslij parametry programu cieniującego do karty graficznej
     glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
     glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(camera.getViewMatrix(deltaTime)));
-    glUniformMatrix4fv(sp->u("M"),1,false,glm::value_ptr(M));
+    
+	drawMap();
+	drawSphere();
 
-    glEnableVertexAttribArray(sp->a("vertex"));  //Włącz przesyłanie danych do atrybutu vertex
-    glVertexAttribPointer(sp->a("vertex"),4,GL_FLOAT,false,0,vertices); //Wskaż tablicę z danymi dla atrybutu vertex
-
-	glEnableVertexAttribArray(sp->a("color"));  //Włącz przesyłanie danych do atrybutu color
-	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, colors); //Wskaż tablicę z danymi dla atrybutu color
-
-	glEnableVertexAttribArray(sp->a("normal"));  //Włącz przesyłanie danych do atrybutu normal
-	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, normals); //Wskaż tablicę z danymi dla atrybutu normal
-
-	glEnableVertexAttribArray(sp->a("texCoord0"));  //Włącz przesyłanie danych do atrybutu texCoord
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords); //Wskaż tablicę z danymi dla atrybutu texCoord
-
-	glUniform1i(sp->u("textureMap0"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex0);
-
-    glDrawArrays(GL_TRIANGLES,0,vertexCount); //Narysuj obiekt
-
-    glDisableVertexAttribArray(sp->a("vertex"));  //Wyłącz przesyłanie danych do atrybutu vertex
-	glDisableVertexAttribArray(sp->a("color"));  //Wyłącz przesyłanie danych do atrybutu color
-	glDisableVertexAttribArray(sp->a("normal"));  //Wyłącz przesyłanie danych do atrybutu normal
-	glDisableVertexAttribArray(sp->a("texCoord0"));  //Wyłącz przesyłanie danych do atrybutu texCoord0
+	//sphere.draw(sp, tex0);
+	//glDrawArrays(GL_TRIANGLES, 0, sphere.vertexCount);
 
     glfwSwapBuffers(window); //Przerzuć tylny bufor na przedni
 }
