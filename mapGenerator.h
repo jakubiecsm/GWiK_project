@@ -25,7 +25,7 @@ private:
 	void calculateMapColors();
 	void calculateMapTexCoords();
 
-
+	void assingMapVerticesNormal(int vertex);
 
 public:
 	mapGenerator(float flatness, int size);

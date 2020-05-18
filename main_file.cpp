@@ -26,13 +26,14 @@ ShaderProgram *sp;
 Camera camera = Camera();
 Mouse mouse = Mouse();
 
-mapGenerator map = mapGenerator(0.1, 2);
+mapGenerator map = mapGenerator(0.1, 50);
 
 GLuint tex0;
 
 
 float* vertices = map.getMapVertices();
-float* normals = map.getMapNormals();
+//float* normals = map.getMapNormals();
+float* normals = map.getMapVerticesNormals();
 float* colors = map.getMapColors();
 float* texCoords = map.getMapTexCoords();
 int vertexCount = map.getMapVertexCount();

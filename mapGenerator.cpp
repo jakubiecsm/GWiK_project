@@ -1,4 +1,4 @@
-#include "mapGenerator.h"
+﻿#include "mapGenerator.h"
 
 mapGenerator::mapGenerator(float flatness, int size)
 	: size(size), flatness(flatness), verticesCount(size * size * 6) {
@@ -26,8 +26,8 @@ mapGenerator::mapGenerator(float flatness, int size)
 	//Counting heights in different points of map
 	calculateMapHeights();
 	calculateMapVertices();
-	calculateMapVerticesNormals();
 	calculateMapNormals();
+	calculateMapVerticesNormals();
 
 	calculateMapColors();
 	calculateMapTexCoords();
@@ -55,7 +55,7 @@ void mapGenerator::calculateMapVertices() {
 
 		//One for creates two triangles (6 vertices = 24 coords)
 		for (int x = 0; x < size; ++x) {
-			
+
 			//first triangle
 			mapVertices[index++] = x - offsetX;
 			mapVertices[index++] = mapHeights[z][x];
@@ -88,10 +88,6 @@ void mapGenerator::calculateMapVertices() {
 			mapVertices[index++] = z - offsetZ + 1;
 			mapVertices[index++] = 1.0f;
 		}
-	}
-	for (int i = 0; i < 4 * verticesCount; i++) {
-		if (i % 4 == 0) std::cout << "\n";
-		std::cout << mapVertices[i] << "|";
 	}
 }
 
@@ -128,20 +124,52 @@ void mapGenerator::calculateMapNormals() {
 	}
 }
 
+
+void mapGenerator::assingMapVerticesNormal(int vertex) {
+	using namespace glm;
+
+	vec3 temp = vec3(0, 0, 0);
+	int anotherVertex = (size - 1) * 6 + 2;
+
+	int moves[6] = { 0, 3, 5, anotherVertex, anotherVertex + 2, anotherVertex + 5 };
+
+	//std::cout << "VEC3: " << temp.x << "|" << temp.y << "|" << temp.z << "\n";
+	
+	for (int i = 0; i < 6; i++) 
+		temp += vec3(mapNormals[(vertex + moves[i]) * 4], mapNormals[(vertex + moves[i]) * 4 + 1], mapNormals[(vertex + moves[i]) * 4 + 2]);
+	
+	temp = normalize(temp);
+
+	for (int i = 0; i < 6; i++) {
+		mapVerticesNormals[(vertex + moves[i]) * 4] = temp.x;
+		mapVerticesNormals[(vertex + moves[i]) * 4 + 1] = temp.y;
+		mapVerticesNormals[(vertex + moves[i]) * 4 + 2] = temp.z;
+	}
+}
+
 void mapGenerator::calculateMapVerticesNormals() {
+	using namespace std;
+	using namespace glm;
 
-	for (int i = 0; i < 4 * verticesCount ; ++i) {
-		
-		//Looking for all adjacent vertices on different walls
-		if (i - 8 > 0) {
-
-		}
-		if (i + 8 < 4 * verticesCount) {
-
-		}
-
+	for (int i = 0; i < 4 * verticesCount; i++) {
+		mapVerticesNormals[i++] = 0.0f;
+		mapVerticesNormals[i++] = 1.0f;
+		mapVerticesNormals[i++] = 0.0f;
+		mapVerticesNormals[i] = 0.0f;
 	}
 
+	int vertex = 5;
+	int row = 1;
+	while (vertex <= (6 * size * (size - 1) - 2)) {
+
+		while (vertex < row * size * 6 - 1) {
+			assingMapVerticesNormal(vertex);
+			vertex += 6;
+		}
+		vertex -= 6;
+		vertex = 5 + 6 * size * row;
+		row++;
+	}
 }
 
 void mapGenerator::calculateMapColors() {
