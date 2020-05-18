@@ -32,6 +32,7 @@ public:
 	float* getNormals() { return mapNormals; }
 	float* getColors() { return mapColors; }
 	float* getTexCoords() { return texCoords; }
+	float** getMapHeights() { return mapHeights; }
 	int getVertexCount() { return verticesCount; }
 
 

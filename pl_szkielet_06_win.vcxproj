@@ -39,9 +39,6 @@
     <None Include="f_simplest.glsl" />
     <None Include="v_simplest.glsl" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="grass.png" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{7288C82C-3F3E-4501-8878-A310FCA284FE}</ProjectGuid>

@@ -39,7 +39,7 @@ void mapGenerator::calculateMapHeights() {
 
 	for (int z = 0; z <= size; ++z)
 		for (int x = 0; x <= size; ++x)
-			mapHeights[x][z] = 20 * flatness * (cos(0.3 * x) * cos(0.3 * z));
+			mapHeights[x][z] = 20 * flatness * (2 * cos(0.3 * x) * cos(0.3 * z));
 }
 
 void mapGenerator::calculateMapVertices() {
@@ -91,28 +91,46 @@ void mapGenerator::calculateMapVertices() {
 
 void mapGenerator::calculateNormals() {
 	using namespace std;
+	using namespace glm;
 
-	glm::vec3 v1, v2, v3;
+	bool odd = true;
+	vec3 v1, v2, v3;
 	for (int i = 0; i < 4 * verticesCount; i++) {
-		v1 = glm::vec3(mapVertices[i + 4] - mapVertices[i],
+		v1 = vec3(mapVertices[i + 4] - mapVertices[i],
 			mapVertices[i + 5] - mapVertices[i + 1],
 			mapVertices[i + 6] - mapVertices[i + 2]);
-		v2 = glm::vec3(mapVertices[i + 8] - mapVertices[i],
+		v2 = vec3(mapVertices[i + 8] - mapVertices[i],
 			mapVertices[i + 9] - mapVertices[i + 1],
 			mapVertices[i + 10] - mapVertices[i + 2]);
 
-		v3 = glm::normalize(glm::cross(v1, v2));
+		if (!odd) {
+			v3 = normalize(cross(v1, v2));
+			odd = true;
+		}
+		else {
+			v3 = normalize(cross(v2, v1));
+			odd = false;
+		}
+			
+			
 		
-		//cout << v3.x << "|" << v3.y << "|" << v3.z << endl;
 		
-		for (int j = i; j < 12; j++) {
+		for (int j = i; j < i + 12; j++) {
 			mapNormals[j++] = v3.x;
-			mapNormals[j++] = v3.y;
+			mapNormals[j++] = abs(v3.y);
 			mapNormals[j++] = v3.z;
 			mapNormals[j] = 0.0f;
 		}
 		i += 11;
 	}
+
+	for (int i = 0; i < 4 * verticesCount; i++) {
+		if (i % 4 == 0) cout << endl;
+		cout << mapNormals[i] << "|";
+		
+	}
+
+
 }
 
 void mapGenerator::calculateColors() {
