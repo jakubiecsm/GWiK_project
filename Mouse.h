@@ -5,7 +5,7 @@
 #ifndef OPENGL_MOUSE_H
 #define OPENGL_MOUSE_H
 
-const float SENSITIVITY =   1.0f;
+const float SENSITIVITY = 0.5f;
 
 class Mouse final {
 

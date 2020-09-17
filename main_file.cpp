@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Mouse.h"
 #include "mapGenerator.h"
+#include "wtypes.h"
 
 float speed_x=0;
 float speed_y=0;
@@ -26,7 +27,7 @@ ShaderProgram *sp;
 Camera camera = Camera();
 Mouse mouse = Mouse();
 
-mapGenerator map = mapGenerator(0.1, 50);
+mapGenerator map = mapGenerator(0.1, 200);
 
 GLuint tex0;
 
@@ -37,22 +38,6 @@ float* normals = map.getMapVerticesNormals();
 float* colors = map.getMapColors();
 float* texCoords = map.getMapTexCoords();
 int vertexCount = map.getMapVertexCount();
-
-//Odkomentuj, żeby rysować kostkę
-//float* vertices = myCubeVertices;
-//float* normals = myCubeNormals;
-//float* texCoords = myCubeTexCoords;
-//float* colors = myCubeColors;
-//int vertexCount = myCubeVertexCount;
-
-
-//odkomentuj, żeby rysować czajnik
-//float* vertices = myTeapotVertices;
-//float* normals = myTeapotVertexNormals;
-//float* texCoords = myTeapotTexCoords;
-//float* colors = myTeapotColors;
-//int vertexCount = myTeapotVertexCount;
-
 
 
 //Procedura obsługi błędów
@@ -120,6 +105,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 
 	tex0 = readTexture("metal.png");
 
+
 	sp=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
 }
 
@@ -177,9 +163,22 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 }
 
 
+void GetDesktopResolution(int& horizontal, int& vertical)
+{
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+	horizontal = desktop.right;
+	vertical = desktop.bottom;
+}
+
 int main(void)
 {
+	int horizontal = 0;
+	int vertical = 0;
+	GetDesktopResolution(horizontal, vertical);
 	GLFWwindow* window; //Wskaźnik na obiekt reprezentujący okno
+	
 
 	glfwSetErrorCallback(error_callback);//Zarejestruj procedurę obsługi błędów
 
@@ -189,7 +188,7 @@ int main(void)
 	}
 
 	
-	window = glfwCreateWindow(1366, 988, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
+	window = glfwCreateWindow(horizontal, vertical, "Angry Balls", NULL, NULL);  
 
 	if (!window) //Jeżeli okna nie udało się utworzyć, to zamknij program
 	{
