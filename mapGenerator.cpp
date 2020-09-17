@@ -41,7 +41,10 @@ void mapGenerator::calculateMapHeights() {
 
 	for (int z = 0; z <= size; ++z)
 		for (int x = 0; x <= size; ++x)
-			mapHeights[x][z] = 20 * flatness * (2 * cos(0.3 * x) * cos(0.3 * z));
+			mapHeights[x][z] = //flatness * (0.5 * sin(3.28 * (x + 2 * z) / 6) + cos(2.28 * (x + z) / 6) + 0.5 * sin(4.28 * (2 * x + z) / 6));
+			20 * flatness * (2 * cos(0.3 * x) * cos(0.3 * z));
+			
+
 }
 
 void mapGenerator::calculateMapVertices() {

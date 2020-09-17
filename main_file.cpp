@@ -30,8 +30,7 @@ Mouse mouse = Mouse();
 mapGenerator map = mapGenerator(0.1, 200);
 
 GLuint tex0; //grass
-GLuint tex1; //snow
-GLuint tex2; //mud
+GLuint tex1; //grassSpecularMap
 
 
 float* vertices = map.getMapVertices();
@@ -107,7 +106,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetCursorPosCallback(window, mouse_callback);
 
 	tex0 = readTexture("grass.png");
-	tex1 = readTexture("metal.png");
+	tex1 = readTexture("SpecularMap.png");
 
 	sp=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
 }
@@ -153,7 +152,12 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 
 
 	glUniform1i(sp->u("textureMap0"), 0);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex0);
+
+	glUniform1i(sp->u("textureMap1"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, tex1);
 
 
     glDrawArrays(GL_TRIANGLES,0,vertexCount); //Narysuj obiekt
