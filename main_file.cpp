@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Mouse.h"
 #include "mapGenerator.h"
+#include "wtypes.h"
 
 float speed_x=0;
 float speed_y=0;
@@ -26,32 +27,17 @@ ShaderProgram *sp;
 Camera camera = Camera();
 Mouse mouse = Mouse();
 
-mapGenerator map = mapGenerator(0.1, 20);
+mapGenerator map = mapGenerator(0.1, 200);
 
 GLuint tex0;
 
 
-float* vertices = map.getVertices();
-float* normals = map.getNormals();
-float* colors = map.getColors();
-float* texCoords = map.getTexCoords();
-int vertexCount = map.getVertexCount();
-
-//Odkomentuj, żeby rysować kostkę
-//float* vertices = myCubeVertices;
-//float* normals = myCubeNormals;
-//float* texCoords = myCubeTexCoords;
-//float* colors = myCubeColors;
-//int vertexCount = myCubeVertexCount;
-
-
-//Odkomentuj, żeby rysować czajnik
-//float* vertices = myTeapotVertices;
-//float* normals = myTeapotVertexNormals;
-//float* texCoords = myTeapotTexCoords;
-//float* colors = myTeapotColors;
-//int vertexCount = myTeapotVertexCount;
-
+float* vertices = map.getMapVertices();
+//float* normals = map.getMapNormals();
+float* normals = map.getMapVerticesNormals();
+float* colors = map.getMapColors();
+float* texCoords = map.getMapTexCoords();
+int vertexCount = map.getMapVertexCount();
 
 
 //Procedura obsługi błędów
@@ -119,6 +105,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 
 	tex0 = readTexture("metal.png");
 
+
 	sp=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
 }
 
@@ -136,21 +123,17 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glm::mat4 V=glm::lookAt(
-         glm::vec3(0, 0, -2.5),
-         glm::vec3(0,0,0),
-         glm::vec3(0.0f,1.0f,0.0f)); //Wylicz macierz widoku
 
+	glm::mat4 V = camera.getViewMatrix(deltaTime);
     glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
 
     glm::mat4 M=glm::mat4(1.0f);
-	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
-	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f)); //Wylicz macierz modelu
 
     sp->use();//Aktywacja programu cieniującego
+
     //Przeslij parametry programu cieniującego do karty graficznej
     glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
-    glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(camera.getViewMatrix(deltaTime)));
+    glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(V));
     glUniformMatrix4fv(sp->u("M"),1,false,glm::value_ptr(M));
 
     glEnableVertexAttribArray(sp->a("vertex"));  //Włącz przesyłanie danych do atrybutu vertex
@@ -180,9 +163,22 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 }
 
 
+void GetDesktopResolution(int& horizontal, int& vertical)
+{
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+	horizontal = desktop.right;
+	vertical = desktop.bottom;
+}
+
 int main(void)
 {
+	int horizontal = 0;
+	int vertical = 0;
+	GetDesktopResolution(horizontal, vertical);
 	GLFWwindow* window; //Wskaźnik na obiekt reprezentujący okno
+	
 
 	glfwSetErrorCallback(error_callback);//Zarejestruj procedurę obsługi błędów
 
@@ -192,7 +188,7 @@ int main(void)
 	}
 
 	
-	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
+	window = glfwCreateWindow(horizontal, vertical, "Angry Balls", NULL, NULL);  
 
 	if (!window) //Jeżeli okna nie udało się utworzyć, to zamknij program
 	{

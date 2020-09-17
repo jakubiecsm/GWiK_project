@@ -14,16 +14,17 @@ in vec2 texCoord0; //wsp teksturowania
 
 
 //Zmienne interpolowane
-out vec4 ic;
+out vec4 ic;    // przesłanie koloru do fragment shadera
 out vec4 l;
 out vec4 n;
 out vec4 v;
 out vec2 iTexCoord0;
 
 void main(void) {
-    vec4 lp = vec4(0, 100, 0, 1); //pozcyja światła, przestrzeń świata
-    l = normalize(V * lp - V*M*vertex); //wektor do światła w przestrzeni oka
-    v = normalize(vec4(0, 0, 0, 1) - V * M * vertex); //wektor do obserwatora w przestrzeni oka
+    vec4 lp = vec4(0, 200, 200, 1); //pozcyja światła, przestrzeń świata
+    vec4 temp = V * M * vertex;
+    l = normalize(V * lp - temp); //wektor do światła w przestrzeni oka
+    v = normalize(vec4(0, 0, 0, 1) - temp); //wektor do obserwatora w przestrzeni oka
     n = normalize(V * M * normal); //wektor normalny w przestrzeni oka
     iTexCoord0 = texCoord0;
 
