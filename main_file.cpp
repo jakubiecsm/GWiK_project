@@ -29,11 +29,12 @@ Mouse mouse = Mouse();
 
 mapGenerator map = mapGenerator(0.1, 200);
 
-GLuint tex0;
+GLuint tex0; //grass
+GLuint tex1; //snow
+GLuint tex2; //mud
 
 
 float* vertices = map.getMapVertices();
-//float* normals = map.getMapNormals();
 float* normals = map.getMapVerticesNormals();
 float* colors = map.getMapColors();
 float* texCoords = map.getMapTexCoords();
@@ -87,9 +88,11 @@ GLuint readTexture(const char* filename) {
 	//Wczytaj obrazek do pamięci karty graficznej skojarzonej z uchwytem
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
+	glGenerateMipmap(GL_TEXTURE_2D);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
 
 	return tex;
 }
@@ -103,8 +106,8 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetKeyCallback(window,keyCallback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 
-	tex0 = readTexture("metal.png");
-
+	tex0 = readTexture("grass.png");
+	tex1 = readTexture("metal.png");
 
 	sp=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
 }
@@ -148,9 +151,10 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 	glEnableVertexAttribArray(sp->a("texCoord0"));  //Włącz przesyłanie danych do atrybutu texCoord
 	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords); //Wskaż tablicę z danymi dla atrybutu texCoord
 
+
 	glUniform1i(sp->u("textureMap0"), 0);
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex0);
+
 
     glDrawArrays(GL_TRIANGLES,0,vertexCount); //Narysuj obiekt
 
