@@ -39,6 +39,9 @@
     <ClInclude Include="mapGenerator.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="objLoader.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lodepng.cpp">
@@ -56,6 +59,9 @@
     <ClCompile Include="mapGenerator.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="objLoader.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="f_simplest.glsl">
@@ -64,5 +70,29 @@
     <None Include="v_simplest.glsl">
       <Filter>Pliki zasobów</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="gpl.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="grassNormalMap.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="grass.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="SpecularMap.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="metal.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="lightSource.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="models\light.obj" />
+    <Object Include="models\lamp.obj" />
   </ItemGroup>
 </Project>

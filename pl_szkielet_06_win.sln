@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pl_szkielet_06_win", "pl_szkielet_06_win.vcxproj", "{7288C82C-3F3E-4501-8878-A310FCA284FE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C3B1D947-D8FC-4DCA-8D66-DDCCB0646161}"
+	ProjectSection(SolutionItems) = preProject
+		grassSpecularMap.png = grassSpecularMap.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

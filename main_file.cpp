@@ -17,20 +17,25 @@
 #include "Mouse.h"
 #include "mapGenerator.h"
 #include "wtypes.h"
+#include "objLoader.hpp"
 
 float speed_x=0;
 float speed_y=0;
 float aspectRatio=1;
 float deltaTime = 0.0f;
+const int mapSize = 100;
+
 
 ShaderProgram *sp;
 Camera camera = Camera();
 Mouse mouse = Mouse();
 
-mapGenerator map = mapGenerator(0.1, 200);
+mapGenerator map = mapGenerator(0.1, mapSize);
 
 GLuint tex0; //grass
 GLuint tex1; //grassSpecularMap
+GLuint tex2; //metal
+GLuint tex3; //lightSource
 
 
 float* vertices = map.getMapVertices();
@@ -38,6 +43,19 @@ float* normals = map.getMapVerticesNormals();
 float* colors = map.getMapColors();
 float* texCoords = map.getMapTexCoords();
 int vertexCount = map.getMapVertexCount();
+
+float* lampVertices;
+float* lampNormals;
+float* lampColors;
+float* lampTexCoords;
+int lampVertexCount;
+
+float* lightVertices;
+float* lightNormals;
+float* lightColors;
+float* lightTexCoords;
+int lightVertexCount;
+
 
 
 //Procedura obsługi błędów
@@ -105,8 +123,13 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetKeyCallback(window,keyCallback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 
+	lampVertexCount = loadOBJ("models\\lamp.obj",lampVertices, lampTexCoords, lampNormals, lampColors);
+	lightVertexCount = loadOBJ("models\\light.obj", lightVertices, lightTexCoords, lightNormals, lightColors);
+
 	tex0 = readTexture("grass.png");
 	tex1 = readTexture("SpecularMap.png");
+	tex2 = readTexture("metal.png");
+	tex3 = readTexture("lightSource.png");
 
 	sp=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
 }
@@ -120,26 +143,11 @@ void freeOpenGLProgram(GLFWwindow* window) {
 }
 
 
-//Procedura rysująca zawartość sceny
-void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
-	//************Tutaj umieszczaj kod rysujący obraz******************l
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void drawMap(glm::mat4 M) {
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 
-
-	glm::mat4 V = camera.getViewMatrix(deltaTime);
-    glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
-
-    glm::mat4 M=glm::mat4(1.0f);
-
-    sp->use();//Aktywacja programu cieniującego
-
-    //Przeslij parametry programu cieniującego do karty graficznej
-    glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
-    glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(V));
-    glUniformMatrix4fv(sp->u("M"),1,false,glm::value_ptr(M));
-
-    glEnableVertexAttribArray(sp->a("vertex"));  //Włącz przesyłanie danych do atrybutu vertex
-    glVertexAttribPointer(sp->a("vertex"),4,GL_FLOAT,false,0,vertices); //Wskaż tablicę z danymi dla atrybutu vertex
+	glEnableVertexAttribArray(sp->a("vertex"));  //Włącz przesyłanie danych do atrybutu vertex
+	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices); //Wskaż tablicę z danymi dla atrybutu vertex
 
 	glEnableVertexAttribArray(sp->a("color"));  //Włącz przesyłanie danych do atrybutu color
 	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, colors); //Wskaż tablicę z danymi dla atrybutu color
@@ -150,7 +158,6 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 	glEnableVertexAttribArray(sp->a("texCoord0"));  //Włącz przesyłanie danych do atrybutu texCoord
 	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords); //Wskaż tablicę z danymi dla atrybutu texCoord
 
-
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex0);
@@ -159,8 +166,84 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, tex1);
 
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount); //Narysuj obiekt
+}
 
-    glDrawArrays(GL_TRIANGLES,0,vertexCount); //Narysuj obiekt
+
+void drawLamp(glm::mat4 M) {
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
+
+	glEnableVertexAttribArray(sp->a("vertex"));  //Włącz przesyłanie danych do atrybutu vertex
+	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, lampVertices); //Wskaż tablicę z danymi dla atrybutu vertex
+
+	glEnableVertexAttribArray(sp->a("color"));  //Włącz przesyłanie danych do atrybutu color
+	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, lampColors); //Wskaż tablicę z danymi dla atrybutu color
+
+	glEnableVertexAttribArray(sp->a("normal"));  //Włącz przesyłanie danych do atrybutu normal
+	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, lampNormals); //Wskaż tablicę z danymi dla atrybutu normal
+
+	glEnableVertexAttribArray(sp->a("texCoord0"));  //Włącz przesyłanie danych do atrybutu texCoord
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, lampTexCoords); //Wskaż tablicę z danymi dla atrybutu texCoord
+
+	glUniform1i(sp->u("textureMap0"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex2);
+
+	glDrawArrays(GL_TRIANGLES, 0, lampVertexCount); //Narysuj obiekt
+}
+
+void drawLight(glm::mat4 M) {
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
+
+	glEnableVertexAttribArray(sp->a("vertex"));  //Włącz przesyłanie danych do atrybutu vertex
+	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, lightVertices); //Wskaż tablicę z danymi dla atrybutu vertex
+
+	glEnableVertexAttribArray(sp->a("color"));  //Włącz przesyłanie danych do atrybutu color
+	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, lightColors); //Wskaż tablicę z danymi dla atrybutu color
+
+	glEnableVertexAttribArray(sp->a("normal"));  //Włącz przesyłanie danych do atrybutu normal
+	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, lightNormals); //Wskaż tablicę z danymi dla atrybutu normal
+
+	glEnableVertexAttribArray(sp->a("texCoord0"));  //Włącz przesyłanie danych do atrybutu texCoord
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, lightTexCoords); //Wskaż tablicę z danymi dla atrybutu texCoord
+
+
+	glUniform1i(sp->u("textureMap0"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex3);
+
+	glDrawArrays(GL_TRIANGLES, 0, lightVertexCount); //Narysuj obiekt
+}
+
+void drawWholeLamp(glm::mat4 M) {
+	drawLamp(M);
+	drawLight(M);
+}
+
+//Procedura rysująca zawartość sceny
+void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
+	//************Tutaj umieszczaj kod rysujący obraz******************l
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	glm::mat4 V = camera.getViewMatrix(deltaTime);
+    glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 0.01f, 2 * (float)mapSize); //Wylicz macierz rzutowania
+
+    glm::mat4 M=glm::mat4(1.0f);
+    sp->use();//Aktywacja programu cieniującego
+
+    //Przeslij parametry programu cieniującego do karty graficznej
+    glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
+    glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(V));
+
+	drawMap(M);
+
+	float lampScale = 3.0f;
+
+	glm::mat4 lampM = glm::scale(glm::translate(M, glm::vec3(mapSize/2 - 5, 7, mapSize / 2 - 6)), glm::vec3(lampScale, lampScale, lampScale));
+	drawWholeLamp(lampM);
+	lampM = glm::scale(glm::translate(M, glm::vec3(-mapSize / 2 + 10, 7, mapSize / 2 - 6)), glm::vec3(lampScale, lampScale, lampScale));
+	drawWholeLamp(lampM);
 
     glDisableVertexAttribArray(sp->a("vertex"));  //Wyłącz przesyłanie danych do atrybutu vertex
 	glDisableVertexAttribArray(sp->a("color"));  //Wyłącz przesyłanie danych do atrybutu color

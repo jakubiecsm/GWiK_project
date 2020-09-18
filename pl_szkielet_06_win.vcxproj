@@ -26,6 +26,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="myCube.h" />
     <ClInclude Include="myTeapot.h" />
+    <ClInclude Include="objLoader.hpp" />
     <ClInclude Include="shaderprogram.h" />
   </ItemGroup>
   <ItemGroup>
@@ -33,11 +34,30 @@
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
     <ClCompile Include="mapGenerator.cpp" />
+    <ClCompile Include="objLoader.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="f_simplest.glsl" />
     <None Include="v_simplest.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="gpl.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="grass.png" />
+    <Image Include="grassNormalMap.png" />
+    <Image Include="lightSource.png" />
+    <Image Include="metal.png" />
+    <Image Include="SpecularMap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="models\lamp.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Object>
+    <Object Include="models\light.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Object>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -108,7 +128,7 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>glew\include;glfw\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
